@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Unlock Surprise</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+
+.gift{
+    font-size:120px;
+    cursor:pointer;
+    transition: transform 0.5s;
+}
+
+.open{
+    transform: rotate(20deg) scale(1.2);
+}
+
+.balloon{
+    position:fixed;
+    bottom:-100px;
+    font-size:40px;
+    animation: rise 4s linear forwards;
+}
+
+@keyframes rise{
+    0%{transform:translateY(0);}
+    100%{transform:translateY(-1000px);}
+}
+
+</style>
+
+</head>
+
+<body class="center">
+
+<h2>Only a special person can unlock this surprise 🎁</h2>
+
+<div id="gift" class="gift">🎁</div>
+
+<br>
+
+<input type="password" id="pass" placeholder="Enter the secret word">
+
+<p>Hint: The password belongs to the birthday person 😉</p>
+
+<br>
+
+<button onclick="check()">Open Gift</button>
+
+<script>
+
+function createBalloon(){
+    let balloon = document.createElement("div");
+    balloon.className="balloon";
+    let emojis=["🎈","🎉","✨"];
+    balloon.innerHTML = emojis[Math.floor(Math.random()*emojis.length)];
+    balloon.style.left = Math.random()*100+"%";
+    document.body.appendChild(balloon);
+    setTimeout(()=>{
+        balloon.remove();
+    },4000);
+}
+
+function check(){
+    let p = document.getElementById("pass").value.trim().toLowerCase();
+    if(p === "muskan"){
+        document.getElementById("gift").classList.add("open");
+
+        for(let i=0;i<15;i++){
+            setTimeout(createBalloon,i*200);
+        }
+
+        setTimeout(function(){
+            window.location.href="/surprise";
+        },3500);
+
+    } else {
+        alert("Hmm... that doesn't seem right 😊");
+    }
+}
+
+</script>
+
+</body>
+</html>

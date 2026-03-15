@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Special Message</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+
+/* stars background */
+
+.stars{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+}
+
+.star{
+position:absolute;
+width:3px;
+height:3px;
+background:white;
+border-radius:50%;
+animation:twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle{
+from{opacity:0.3;}
+to{opacity:1;}
+}
+
+/* moving stars */
+
+.move{
+animation:moveStars 30s linear infinite;
+}
+
+@keyframes moveStars{
+from{transform:translateY(0);}
+to{transform:translateY(-200px);}
+}
+
+/* card */
+
+.message-card{
+background:white;
+color:#333;
+max-width:650px;
+padding:35px;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.25);
+text-align:center;
+}
+
+/* message text */
+
+#text{
+line-height:1.7;
+font-size:18px;
+margin-top:10px;
+}
+
+/* cake */
+
+.cake{
+font-size:110px;
+cursor:pointer;
+margin-top:25px;
+transition:transform 0.3s;
+}
+
+.cake:hover{
+transform:scale(1.1);
+}
+
+/* buttons */
+
+button{
+margin-top:15px;
+padding:10px 22px;
+border:none;
+border-radius:8px;
+background:#ff6fa5;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#ff4c8a;
+}
+
+.hidden{
+display:none;
+}
+
+/* wish box */
+
+.wish-box{
+margin-top:15px;
+padding:15px;
+background:#fff4f8;
+border-radius:10px;
+font-weight:bold;
+}
+
+/* glowing final message */
+
+.final-glow{
+font-size:20px;
+color:#ff4c8a;
+animation:glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow{
+from{text-shadow:0 0 5px #ff9ec4,0 0 10px #ff9ec4;}
+to{text-shadow:0 0 15px #ff4c8a,0 0 25px #ff4c8a;}
+}
+
+/* hearts */
+
+.heart{
+position:fixed;
+bottom:-20px;
+font-size:20px;
+animation:floatUp 6s linear forwards;
+pointer-events:none;
+}
+
+@keyframes floatUp{
+0%{transform:translateY(0);opacity:1;}
+100%{transform:translateY(-100vh);opacity:0;}
+}
+
+/* fade line */
+
+.fade{
+opacity:0;
+animation:fadeIn 2s forwards;
+}
+
+@keyframes fadeIn{
+to{opacity:1;}
+}
+
+/* mobile */
+
+@media(max-width:768px){
+
+.message-card{
+padding:25px;
+}
+
+#text{
+font-size:16px;
+}
+
+.cake{
+font-size:90px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body class="center">
+<iframe src="/music" style="display:none;"></iframe>
+<!-- birthday music -->
+
+<audio id="bgMusic">
+<source src="{{ url_for('static', filename='audio/birthday.mp3') }}" type="audio/mp3">
+</audio>
+
+<div class="stars" id="stars"></div>
+
+<div class="message-card">
+
+<h1>A Special Message For You 💫</h1>
+
+<p id="text"></p>
+
+<h3>Make a wish and click the cake 🎂</h3>
+
+<div id="cake" class="cake">🎂</div>
+
+<div id="wishSection" class="hidden">
+
+<button onclick="randomWish()">Tap for a Random Wish ✨</button>
+
+<div id="wish" class="wish-box"></div>
+
+</div>
+
+<div id="questionSection" class="hidden">
+
+<h3>Did this surprise make you smile? 😄</h3>
+
+<button onclick="smileYes()">Yes</button>
+<button onclick="smileMaybe()">Maybe</button>
+
+<div id="smileMessage" class="wish-box"></div>
+
+</div>
+
+<div id="lastSection" class="hidden">
+
+<button onclick="lastMessage()">One Last Thing 💌</button>
+
+<div id="finalMessage" class="wish-box"></div>
+
+<div id="extraLine" class="wish-box hidden"></div>
+
+</div>
+
+</div>
+
+<script>
+
+/* stars */
+
+let starContainer=document.getElementById("stars");
+
+for(let i=0;i<80;i++){
+
+let star=document.createElement("div");
+
+star.className="star";
+
+star.style.top=Math.random()*100+"%";
+star.style.left=Math.random()*100+"%";
+
+starContainer.appendChild(star);
+
+}
+
+/* typing message */
+
+let message="Life becomes more beautiful when we have special people around us, and you are definitely one of those people.\n\nOn your birthday, I wish that happiness always finds its way to you, that your heart is always full of peace, and that your life is filled with wonderful moments.\n\nMay this new year of your life bring countless reasons to smile.\n\nHappy Birthday! 🎂✨";
+
+let i=0;
+
+function typing(){
+
+if(i<message.length){
+
+if(message.charAt(i)==="\n"){
+document.getElementById("text").innerHTML+="<br>";
+}
+else{
+document.getElementById("text").innerHTML+=message.charAt(i);
+}
+
+i++;
+
+setTimeout(typing,35);
+
+}
+
+}
+
+typing();
+
+/* cake click */
+
+document.getElementById("cake").onclick=function(){
+
+this.innerHTML="🍰";
+
+/* play music */
+
+document.getElementById("bgMusic").play();
+
+for(let i=0;i<6;i++){
+
+setTimeout(()=>{
+
+confetti({
+particleCount:120,
+spread:120,
+origin:{y:0.6}
+});
+
+},i*400);
+
+}
+
+document.getElementById("wishSection").classList.remove("hidden");
+
+};
+
+/* random wish */
+
+function randomWish(){
+
+let wishes=[
+"May your smile always stay this bright 😊",
+"Hope this year brings you many beautiful surprises ✨",
+"May happiness follow you everywhere 💫",
+"You deserve all the good things in life 🌸",
+"May success and joy always find you 🌟"
+];
+
+let random=Math.floor(Math.random()*wishes.length);
+
+document.getElementById("wish").innerHTML=wishes[random];
+
+document.getElementById("questionSection").classList.remove("hidden");
+
+}
+
+/* smile */
+
+function smileYes(){
+
+document.getElementById("smileMessage").innerHTML="Yay! That makes this little surprise worth it 😄";
+
+document.getElementById("lastSection").classList.remove("hidden");
+
+}
+
+function smileMaybe(){
+
+document.getElementById("smileMessage").innerHTML="Hmm... I guess the next birthday surprise must be even better 😅";
+
+document.getElementById("lastSection").classList.remove("hidden");
+
+}
+
+/* final message */
+
+function lastMessage(){
+
+document.getElementById("finalMessage").innerHTML=
+"<div class='final-glow'>Some people enter our lives quietly and end up meaning more than they know.<br><br>Thank you for being that person. Stay happy always. 🌸</div>";
+
+createHearts();
+
+/* move stars */
+
+let stars=document.querySelectorAll(".star");
+
+stars.forEach(star=>{
+star.classList.add("move");
+});
+
+/* secret line */
+
+setTimeout(function(){
+
+let text="And honestly… I'm really glad I met you.";
+
+let container=document.getElementById("extraLine");
+
+container.classList.remove("hidden");
+container.classList.add("fade");
+
+let j=0;
+
+function typeLine(){
+
+if(j<text.length){
+
+container.innerHTML+=text.charAt(j);
+j++;
+
+setTimeout(typeLine,60);
+
+}
+
+}
+
+typeLine();
+
+},4000);
+
+}
+
+/* hearts */
+
+function createHearts(){
+
+for(let i=0;i<25;i++){
+
+let heart=document.createElement("div");
+
+heart.className="heart";
+
+heart.innerHTML="💖";
+
+heart.style.left=Math.random()*100+"%";
+
+heart.style.fontSize=(Math.random()*20+15)+"px";
+
+heart.style.animationDuration=(Math.random()*3+4)+"s";
+
+document.body.appendChild(heart);
+
+setTimeout(()=>{
+heart.remove();
+},6000);
+
+}
+
+}
+
+
+let music = document.getElementById("bgMusic");
+
+/* restore previous time */
+
+window.addEventListener("load", function(){
+
+let savedTime = localStorage.getItem("musicTime");
+
+if(savedTime){
+music.currentTime = savedTime;
+}
+
+music.play().catch(()=>{});
+
+});
+
+/* keep saving current time */
+
+music.addEventListener("timeupdate", function(){
+
+localStorage.setItem("musicTime", music.currentTime);
+
+});
+
+
+</script>
+
+</body>
+</html>

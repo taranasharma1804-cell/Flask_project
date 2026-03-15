@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Happy Birthday</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+</head>
+
+<body class="center">
+
+<h1 class="big">🎉 Happy Birthday 🎉</h1>
+
+<p>Wishing you a day filled with happiness and smiles.</p>
+
+<audio autoplay loop>
+<source src="{{ url_for('static', filename='music/birthday.mp3') }}">
+</audio>
+
+<br><br>
+
+<a href="/memories">
+<button>See Memories 📸</button>
+</a>
+
+<script>
+
+confetti({
+particleCount:200,
+spread:120
+});
+
+</script>
+
+</body>
+</html>
